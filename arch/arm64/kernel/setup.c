@@ -247,7 +247,6 @@ static void __init setup_processor(void)
 		pr_warn("L1_CACHE_BYTES smaller than the Cache Writeback Granule (%d < %d)\n",
 			L1_CACHE_BYTES, cls);
 
-<<<<<<< HEAD
 	/*
 	 * ID_AA64ISAR0_EL1 contains 4-bit wide signed feature blocks.
 	 * The blocks we test below represent incremental functionality
@@ -266,16 +265,6 @@ static void __init setup_processor(void)
 			break;
 		}
 	}
-=======
-	cpuinfo_store_cpu();
-
-	/* Check we have a non-NULL DT pointer */
-	if (!dt_phys) {
-		early_print("\n"
-			"Error: NULL or invalid device tree blob\n"
-			"The dtb must be 8-byte aligned and passed in the first 512MB of memory\n"
-			"\nPlease check your bootloader.\n");
->>>>>>> 72684ea... arm64: Fix up /proc/cpuinfo
 
 	block = (features >> 8) & 0xf;
 	if (block && !(block & 0x8))
@@ -507,14 +496,7 @@ static int c_show(struct seq_file *m, void *v)
 {
 	int i, j;
 
-<<<<<<< HEAD
 	for_each_present_cpu(i) {
-=======
-	for_each_online_cpu(i) {
-		struct cpuinfo_arm64 *cpuinfo = &per_cpu(cpu_data, i);
-		u32 midr = cpuinfo->reg_midr;
-
->>>>>>> 72684ea... arm64: Fix up /proc/cpuinfo
 		/*
 		 * glibc reads /proc/cpuinfo to determine the number of
 		 * online processors, looking for lines beginning with
@@ -523,7 +505,6 @@ static int c_show(struct seq_file *m, void *v)
 #ifdef CONFIG_SMP
 		seq_printf(m, "processor\t: %d\n", i);
 #endif
-<<<<<<< HEAD
 	}
 
 	/* dump out the processor features */
@@ -559,38 +540,6 @@ static int c_show(struct seq_file *m, void *v)
 
 	if (mach_cpuinfo_show)
 		mach_cpuinfo_show(m, v);
-=======
-		seq_printf(m, "BogoMIPS\t: %lu.%02lu\n",
-			   loops_per_jiffy / (500000UL/HZ),
-			   loops_per_jiffy / (5000UL/HZ) % 100);
-
-		/*
-		 * Dump out the common processor features in a single line.
-		 * Userspace should read the hwcaps with getauxval(AT_HWCAP)
-		 * rather than attempting to parse this, but there's a body of
-		 * software which does already (at least for 32-bit).
-		 */
-		seq_puts(m, "Features\t:");
-		if (personality(current->personality) == PER_LINUX32) {
-#ifdef CONFIG_COMPAT
-			for (j = 0; compat_hwcap_str[j]; j++)
-				if (COMPAT_ELF_HWCAP & (1 << j))
-					seq_printf(m, " %s", compat_hwcap_str[j]);
-#endif /* CONFIG_COMPAT */
-		} else {
-			for (j = 0; hwcap_str[j]; j++)
-				if (elf_hwcap & (1 << j))
-					seq_printf(m, " %s", hwcap_str[j]);
-		}
-		seq_puts(m, "\n");
-
-		seq_printf(m, "CPU implementer\t: 0x%02x\n", (midr >> 24));
-		seq_printf(m, "CPU architecture: 8\n");
-		seq_printf(m, "CPU variant\t: 0x%x\n", ((midr >> 20) & 0xf));
-		seq_printf(m, "CPU part\t: 0x%03x\n", ((midr >> 4) & 0xfff));
-		seq_printf(m, "CPU revision\t: %d\n\n", (midr & 0xf));
-	}
->>>>>>> 72684ea... arm64: Fix up /proc/cpuinfo
 
 	return 0;
 }
