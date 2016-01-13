@@ -380,6 +380,7 @@ struct mdss_dsi_ctrl_pdata {
 	struct dsi_panel_cmds cabc_ui_cmds;
 	struct dsi_panel_cmds cabc_mv_cmds;
 	struct dsi_panel_cmds cabc_dis_cmds;
+	struct dsi_panel_cmds *param_cmds[PARAM_ID_NUM];
 
 	struct dcs_cmd_list cmdlist;
 	struct completion dma_comp;
