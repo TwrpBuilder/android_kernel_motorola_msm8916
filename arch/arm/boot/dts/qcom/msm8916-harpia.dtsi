@@ -1,0 +1,301 @@
+/* Copyright (c) 2014, Motorola Mobility LLC. All rights reserved.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License version 2 and
+* only version 2 as published by the Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*/
+
+#include "msm8916-moto-common.dtsi"
+#include "dsi-panel-mot-boe-499-720p-video.dtsi"
+#include  "msm8916-harpia-dtv.dtsi"
+/ {
+	model = "Motorola Mobility MSM 8916 Harpia";
+	compatible = "qcom,msm8916-harpia", "qcom,msm8916-moto", "qcom,msm8916";
+	aliases {
+		i2c3 = &i2c_3;
+	};
+};
+
+&tlmm_pinmux {
+	pmx_i2c_3 {
+		/* CLK, DATA */
+		qcom,pins = <&gp 11>, <&gp 10>;
+		qcom,num-grp-pins = <2>;
+		qcom,pin-func = <2>;
+		label = "pmx_i2c_3";
+		/* active state */
+		i2c_3_active: i2c_3_active{
+			drive-strength = <2>; /* 2 MA */
+			bias-disable; /* No PULL */
+		};
+		/* suspended state */
+		i2c_3_sleep: i2c_3_sleep {
+			drive-strength = <2>; /* 2 MA */
+			bias-disable; /* No PULL */
+		};
+	};
+
+	pmx_nfc_irq {
+		qcom,pins = <&gp 9>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <0>;
+		label = "nfc_irq";
+
+		nfc_irq_default: default {
+			bias-pull-down;
+			drive-strength = <2>;
+		};
+	};
+
+	pmx_nfc_pwr {
+		qcom,pins = <&gp 36>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <0>;
+		label = "nfc_pwr";
+
+		nfc_pwr_default: default {
+			bias-pull-down;
+			output-low;
+			drive-strength = <2>;
+		};
+	};
+
+	pmx_nfc_en {
+		qcom,pins = <&gp 8>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <0>;
+		label = "nfc_en";
+
+		nfc_en_default: default {
+			bias-pull-down;
+			output-low;
+			drive-strength = <2>;
+		};
+	};
+	touch_reset_n {
+		qcom,pins = <&gp 12>;
+	};
+
+	touch_int_n {
+		qcom,pins = <&gp 13>;
+	};
+	bma25x_int1_pin {
+		qcom,pins = <&gp 96>;
+		qcom,pin-func = <0>;
+		qcom,num-grp-pins = <1>;
+		label = "bma25x_int1_pin";
+		bma25x_int1_default: int1_default {
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+		bma25x_int1_sleep: int1_sleep {
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+        epl8802_active {
+		/* interrupt */
+		qcom,pins = <&gp 113>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <0>;
+		label = "epl8802-active";
+		/* active state */
+		epl8802_active: epl8802_active {
+			drive-strength = <2>; /* 2 MA */
+			bias-disable; /* No PULL */
+		};
+	};
+	epl8802_suspend {
+		/* interrupt  */
+		qcom,pins = <&gp 113> ;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <1>;
+		label = "epl8802-suspend";
+		/*suspended state */
+		epl8802_suspend: epl8802_suspend {
+			drive-strength = <2>; /* 2 MA */
+			bias-disable; /* No PULL */
+		};
+	};
+};
+
+&spi_0 {
+	status = "disabled";
+};
+
+&i2c_1 {
+	tps65132@3e {
+		/* TODO nt50358 is compatibale with tps65132
+                 * So, use same driver, but fully details compatible
+                 * needed to check.
+                 */
+		compatible = "ti,tps65132";
+		reg = <0x3e>;
+		ti,en-gpio-lpm;
+
+		regulators {
+			tps65132_pos: pos-boost {
+				regulator-name = "tps65132-pos";
+				regulator-min-microvolt = <5500000>;
+				regulator-max-microvolt = <5500000>;
+				ti,discharge-enable;
+				ti,en-gpio = <&msm_gpio 97 0>;
+			};
+
+			tps65132_neg: neg-boost {
+				regulator-name = "tps65132-neg";
+				regulator-min-microvolt = <5500000>;
+				regulator-max-microvolt = <5500000>;
+				ti,discharge-enable;
+				ti,en-gpio = <&msm_gpio 98 0>;
+			};
+		};
+	};
+
+	fan54046: fan54046-charger@6b {
+		status = "disabled";
+		compatible = "fairchild,fan54046-charger";
+		reg = <0x6b>;
+
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <62 0x0>;
+		qcom,fan5404x-vadc = <&pm8916_vadc>;
+		qcom,fan5404x-adc_tm = <&pm8916_adc_tm>;
+		regulator-name = "fan54046_otg_vreg";
+
+		fairchild,bms-psy-name = "max170xx_battery";
+		fairchild,ext-temp-volt-mv = <4200>;
+		fairchild,oreg-voltage-mv = <4350>;
+		fairchild,low-voltage-uv = <3000000>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&fan5404x_int_default>;
+	};
+};
+
+&soc {
+
+	i2c_3: i2c@78b7000 { /* BLSP1 QUP3 */
+		compatible = "qcom,i2c-msm-v2";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg-names = "qup_phys_addr", "bam_phys_addr";
+		reg = <0x78b7000 0x600>,
+		      <0x7884000 0x23000>;
+		interrupt-names = "qup_irq", "bam_irq";
+		interrupts = <0 97 0>, <0 238 0>;
+		clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
+			 <&clock_gcc clk_gcc_blsp1_qup3_i2c_apps_clk>;
+		clock-names = "iface_clk", "core_clk";
+		qcom,clk-freq-out = <100000>;
+		qcom,clk-freq-in  = <19200000>;
+		pinctrl-names = "i2c_active", "i2c_sleep";
+		pinctrl-0 = <&i2c_3_active>;
+		pinctrl-1 = <&i2c_3_sleep>;
+		qcom,noise-rjct-scl = <0>;
+		qcom,noise-rjct-sda = <0>;
+		qcom,bam-pipe-idx-cons = <8>;
+		qcom,bam-pipe-idx-prod = <9>;
+		qcom,master-id = <86>;
+	};
+};
+&pm8916_l6 {
+	regulator-boot-on;
+        regulator-always-on;
+};
+
+&mdss_dsi0 {
+	qcom,platform-reset-gpio = <&msm_gpio 25 0>;
+	qcom,platform-bklight-en-gpio = <&msm_gpio 37 0>;
+	qcom,regulator-ldo-mode;
+	qcom,platform-regulator-settings =  [00 01 01 00 20 07 00];
+	qcom,dsi-pref-prim-pan = <&mot_boe_499_720p_vid_v0>;
+	vddio_disp-supply = <&pm8916_l6>;
+	vsp_disp-supply = <&tps65132_pos>;
+	vsn_disp-supply = <&tps65132_neg>;
+};
+
+&i2c_2 {
+	synaptics_dsx_i2c@20 {
+		interrupts = <13 0>;
+		gpios = <&msm_gpio 13 0>, /* IRQ */
+			<&msm_gpio 12 0>; /* RESET */
+	};
+};
+
+&i2c_3 { /* BLSP1 QUP3 */
+	status = "okay";
+	/* BCM 20795 NFC Controller */
+	bcm2079x@77 {
+		status = "ok";
+		compatible = "brcm,bcm2079x";
+		reg = <0x77>;
+		brcm,irq-gpio = <&msm_gpio 9 0x00>;
+		brcm,pwr-gpio = <&msm_gpio 36 0x00>;
+		brcm,wak-gpio = <&msm_gpio 8 0x00>;
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <9 0>;
+		qcom,clk-gpio = <&pm8916_gpios 2 0>;
+		clocks = <&clock_rpm clk_bb_clk2_pin>;
+		clock-names = "ref_clk";
+	};
+	/* BCM 20795 NFC Controller */
+	bcm2079x@77 {
+		status = "ok";
+		compatible = "brcm,bcm2079x";
+		reg = <0x77>;
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <9 0>; 		/* NFC_IRQ */
+		gpios = <&msm_gpio 8 0>, 	/* NFC_ENABLE_IN */
+			<&msm_gpio 9 0>, 		/* NFC_IRQ */
+			<&msm_gpio 36 0>; 		/* NFC_POWER_ON */
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&nfc_irq_default &nfc_pwr_default &nfc_en_default>;
+	};
+};
+
+&i2c_4 { /* BLSP1 QUP4 */
+	bosch@19 { /* Accelerometer sensor */
+		compatible = "bosch,bma253";
+		reg = <0x19>;
+		pinctrl-names = "default","sleep";
+		pinctrl-0 = <&bma25x_int1_default>;
+		pinctrl-1 = <&bma25x_int1_sleep>;
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <96 0x2002>;
+		vdd-supply = <&pm8916_l17>;
+		vio-supply = <&pm8916_l6>;
+		bosch,init-interval = <200>;
+		bosch,place = <4>;
+		bosch,gpio-int1 = <&msm_gpio 96 0x2002>;
+	};
+
+	elan@49 {
+		compatible = "epl,epl8802";
+		reg = <0x49>;
+		epl,irq-gpio = <&msm_gpio 113 0x00>;
+		pinctrl-names = "epl8802_default", "epl8802_suspend";
+		pinctrl-0 = <&epl8802_active>;
+		pinctrl-1 = <&epl8802_suspend>;
+                vdd-supply = <&pm8916_l17>;
+                vio-supply = <&pm8916_l6>;
+	};
+};
+&usb_otg {
+	qcom,hsusb-otg-mode = <1>;
+	/delete-node/ qcom,usbid-gpio;
+};
+
+&sdhc_2 {
+
+    /delete-property/ cd-gpios;
+    pinctrl-0 = <&sdc2_clk_on &sdc2_cmd_on &sdc2_data_on>;
+    pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off>;
+};
+
