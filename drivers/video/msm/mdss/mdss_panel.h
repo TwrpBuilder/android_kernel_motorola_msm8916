@@ -36,10 +36,16 @@ enum cabc_mode {
 	CABC_DIS_MODE,
 	CABC_OFF_MODE,
 	CABC_MODE_MAX_NUM
+
+enum hbm_state {
+	HBM_OFF_STATE = 0,
+	HBM_ON_STATE,
+	HBM_STATE_NUM
 };
 
 enum panel_param_id {
-	PARAM_ID_NUM = 0,
+	PARAM_HBM_ID = 0,
+	PARAM_ID_NUM
 };
 
 struct panel_param_val_map {
