@@ -481,6 +481,7 @@ struct mdss_panel_info {
 	bool hbm_state;
 	bool blank_progress_notify_enabled;
 	struct panel_param *param[PARAM_ID_NUM];
+	bool hbm_restore;
 };
 
 struct mdss_panel_data {
