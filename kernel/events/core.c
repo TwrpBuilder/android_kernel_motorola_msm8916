@@ -6876,7 +6876,6 @@ SYSCALL_DEFINE5(perf_event_open,
 	if (move_group) {
 		struct perf_event_context *gctx = group_leader->ctx;
 
-		mutex_lock(&gctx->mutex);
 		perf_remove_from_context(group_leader, false);
 
 		/*
@@ -6900,6 +6899,7 @@ SYSCALL_DEFINE5(perf_event_open,
 
 	if (move_group) {
 		synchronize_rcu();
+
 		perf_install_in_context(ctx, group_leader, event->cpu);
 		get_ctx(ctx);
 		list_for_each_entry(sibling, &group_leader->sibling_list,
