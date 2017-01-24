@@ -693,16 +693,9 @@ static int can_set_system_xattr(struct inode *inode, const char *name,
 			return rc;
 		}
 		if (acl) {
-<<<<<<< 49177c24adee834df2e65426ad6ec5e37edd58f5
 			rc = posix_acl_update_mode(inode, &inode->i_mode, &acl);
 			posix_acl_release(acl);
 			if (rc) {
-=======
-			struct posix_acl *old_acl = acl;
-			rc = posix_acl_update_mode(inode, &inode->i_mode, &acl);
-			posix_acl_release(old_acl);
-			if (rc < 0) {
->>>>>>> posix_acl: Clear SGID bit when setting file permissions
 				printk(KERN_ERR
 				       "posix_acl_update_mode returned %d\n",
 				       rc);

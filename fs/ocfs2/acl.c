@@ -274,11 +274,7 @@ static int ocfs2_set_acl(handle_t *handle,
 	case ACL_TYPE_ACCESS:
 		name_index = OCFS2_XATTR_INDEX_POSIX_ACL_ACCESS;
 		if (acl) {
-<<<<<<< 49177c24adee834df2e65426ad6ec5e37edd58f5
 			umode_t mode = inode->i_mode;
-=======
-			umode_t mode;
->>>>>>> posix_acl: Clear SGID bit when setting file permissions
 			ret = posix_acl_update_mode(inode, &mode, &acl);
 			if (ret)
 				return ret;
