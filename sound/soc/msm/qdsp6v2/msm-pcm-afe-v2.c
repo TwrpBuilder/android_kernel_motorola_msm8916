@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
+>>>>>>> 8dd68a7f8529... ASoC: msm: qdsp6v2: set pointer to NULL after free
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License version 2 and
@@ -493,6 +497,7 @@ done:
 	mutex_unlock(&prtd->lock);
 	prtd->prepared--;
 	kfree(prtd);
+	runtime->private_data = NULL;
 	return 0;
 }
 static int msm_afe_prepare(struct snd_pcm_substream *substream)
