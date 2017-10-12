@@ -381,7 +381,6 @@ out:
 	return err;
 }
 EXPORT_SYMBOL(cpu_down);
-#endif /*CONFIG_HOTPLUG_CPU*/
 
 /* Requires cpu_add_remove_lock to be held */
 static int __cpuinit _cpu_up(unsigned int cpu, int tasks_frozen)
