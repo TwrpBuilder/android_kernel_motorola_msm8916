@@ -1810,62 +1810,6 @@ end:
 	return rc;
 }
 
-static int mdss_dsi_parse_optional_dcs_cmds(struct device_node *np,
-		struct dsi_panel_cmds *pcmds, char *cmd_key, char *link_key)
-{
-	int rc;
-
-	if (!of_get_property(np, cmd_key, NULL))
-		return 0;
-
-	rc = mdss_dsi_parse_dcs_cmds(np, pcmds, cmd_key, link_key);
-	if (rc)
-		pr_err("%s : Failed parsing %s commands, rc = %d\n",
-			__func__, cmd_key, rc);
-	return rc;
-}
-
-static int mdss_panel_parse_optional_prop(struct device_node *np,
-				struct mdss_panel_info *pinfo,
-				struct mdss_dsi_ctrl_pdata *ctrl)
-{
-	int rc = 0;
-
-	/* Dynamic CABC properties */
-	pinfo->dynamic_cabc_enabled = false;
-	rc = mdss_dsi_parse_optional_dcs_cmds(np, &ctrl->cabc_ui_cmds,
-				"qcom,mdss-dsi-cabc-ui-command", NULL);
-	rc |= mdss_dsi_parse_optional_dcs_cmds(np, &ctrl->cabc_mv_cmds,
-				"qcom,mdss-dsi-cabc-mv-command", NULL);
-	rc |= mdss_dsi_parse_optional_dcs_cmds(np, &ctrl->cabc_dis_cmds,
-				"qcom,mdss-dsi-cabc-dis-command", NULL);
-	if (ctrl->cabc_ui_cmds.cmd_cnt && ctrl->cabc_mv_cmds.cmd_cnt) {
-		pinfo->dynamic_cabc_enabled = true;
-		pinfo->cabc_mode = CABC_UI_MODE;
-		pr_info("%s: Dynamic CABC enabled.\n", __func__);
-	}
-
-	/* Pre-on command property */
-	rc |= mdss_dsi_parse_optional_dcs_cmds(np, &ctrl->pre_on_cmds,
-		"qcom,mdss-dsi-pre-on-command",
-		"qcom,mdss-dsi-pre-on-command-state");
-	if (ctrl->pre_on_cmds.cmd_cnt)
-		pr_info("%s: pre-on commands configured.\n", __func__);
-
-	/* HBM properties */
-	rc |= mdss_dsi_parse_optional_dcs_cmds(np, &ctrl->hbm_on_cmds,
-				"qcom,mdss-dsi-hbm-on-command", NULL);
-	rc |= mdss_dsi_parse_optional_dcs_cmds(np, &ctrl->hbm_off_cmds,
-				"qcom,mdss-dsi-hbm-off-command", NULL);
-	if (ctrl->hbm_on_cmds.cmd_cnt && ctrl->hbm_off_cmds.cmd_cnt) {
-		pinfo->hbm_feature_enabled = true;
-		pinfo->hbm_state = 0;
-		pr_info("%s: HBM enabled.\n", __func__);
-	}
-
-	return rc;
-}
-
 int mdss_dsi_panel_set_hbm(struct mdss_dsi_ctrl_pdata *ctrl, int state)
 {
 	struct mdss_panel_info *pinfo;

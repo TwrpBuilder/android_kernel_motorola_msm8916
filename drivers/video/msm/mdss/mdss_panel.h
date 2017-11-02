@@ -35,7 +35,9 @@ enum cabc_mode {
 	CABC_MV_MODE,
 	CABC_DIS_MODE,
 	CABC_OFF_MODE,
-	CABC_MODE_MAX_NUM
+	CABC_MODE_MAX_NUM,
+	CABC_MODE_NUM
+};
 
 #define BRIGHTNESS_HBM_ON	0xFFFFFFFE
 #define BRIGHTNESS_HBM_OFF	(BRIGHTNESS_HBM_ON - 1)
@@ -63,13 +65,6 @@ enum hbm_state {
 	HBM_OFF_STATE = 0,
 	HBM_ON_STATE,
 	HBM_STATE_NUM
-};
-
-enum cabc_mode {
-	CABC_UI_MODE = 0,
-	CABC_MV_MODE,
-	CABC_DIS_MODE,
-	CABC_MODE_NUM
 };
 
 enum panel_param_id {

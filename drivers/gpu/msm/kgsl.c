@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/* Copyright (c) 2008-2015, The Linux Foundation. All rights reserved.
-=======
 /* Copyright (c) 2008-2017, The Linux Foundation. All rights reserved.
->>>>>>> eb7260546ad9... msm: kgsl: Fix kgsl memory allocation and free race condition
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -3222,13 +3218,8 @@ long kgsl_ioctl_map_user_mem(struct kgsl_device_private *dev_priv,
 
 	trace_kgsl_mem_map(entry, param->fd);
 
-<<<<<<< HEAD
-=======
-	kgsl_mem_entry_commit_process(private, entry);
-
 	/* put the extra refcount for kgsl_mem_entry_create() */
 	kgsl_mem_entry_put(entry);
->>>>>>> eb7260546ad9... msm: kgsl: Fix kgsl memory allocation and free race condition
 	return result;
 
 error_attach:
@@ -3571,14 +3562,9 @@ long kgsl_ioctl_gpumem_alloc(struct kgsl_device_private *dev_priv,
 	param->gpuaddr = entry->memdesc.gpuaddr;
 	param->size = entry->memdesc.size;
 	param->flags = entry->memdesc.flags;
-<<<<<<< HEAD
-=======
-
-	kgsl_mem_entry_commit_process(private, entry);
 
 	/* put the extra refcount for kgsl_mem_entry_create() */
 	kgsl_mem_entry_put(entry);
->>>>>>> eb7260546ad9... msm: kgsl: Fix kgsl memory allocation and free race condition
 	return result;
 err:
 	kgsl_sharedmem_free(&entry->memdesc);
@@ -3619,14 +3605,9 @@ long kgsl_ioctl_gpumem_alloc_id(struct kgsl_device_private *dev_priv,
 	param->size = entry->memdesc.size;
 	param->mmapsize = kgsl_memdesc_mmapsize(&entry->memdesc);
 	param->gpuaddr = entry->memdesc.gpuaddr;
-<<<<<<< HEAD
-=======
-
-	kgsl_mem_entry_commit_process(private, entry);
 
 	/* put the extra refcount for kgsl_mem_entry_create() */
 	kgsl_mem_entry_put(entry);
->>>>>>> eb7260546ad9... msm: kgsl: Fix kgsl memory allocation and free race condition
 	return result;
 err:
 	if (entry)

@@ -454,22 +454,7 @@ struct ion_handle *ion_handle_get_by_id(struct ion_client *client,
 	mutex_lock(&client->lock);
 	handle = idr_find(&client->idr, id);
 	if (handle)
-<<<<<<< HEAD
 		ion_handle_get(handle);
-=======
-		return ion_handle_get_check_overflow(handle);
-
-	return ERR_PTR(-EINVAL);
-}
-
-struct ion_handle *ion_handle_get_by_id(struct ion_client *client,
-						int id)
-{
-	struct ion_handle *handle;
-
-	mutex_lock(&client->lock);
-	handle = ion_handle_get_by_id_nolock(client, id);
->>>>>>> bd9504130351... ANDROID: ion: check for kref overflow
 	mutex_unlock(&client->lock);
 
 	return handle ? handle : ERR_PTR(-EINVAL);
